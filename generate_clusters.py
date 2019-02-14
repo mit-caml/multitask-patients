@@ -10,7 +10,7 @@ from keras.models import Model
 from keras.layers import Input, LSTM, RepeatVector
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
-from grid_search_mortality import stratified_split, load_processed_data
+from run_mortality_prediction import stratified_split, load_processed_data
 from sklearn.mixture import GaussianMixture
 import pickle
 
