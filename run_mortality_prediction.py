@@ -1038,7 +1038,7 @@ def load_processed_data(data_hours=24, gap_time=12):
     """
     Either read pre-processed data from a saved folder, or load in the raw data and preprocess it.
     Should have the files 'saps.csv' (with columns 'subject_id', 'hadm_id', 'icustay_id', 'sapsii')
-    and 'code_status.csv' (with columns 'subject_id', 'hadm_id', 'icustay_id', 'timecmo_chart', 'timecmo_nursingnote')
+    and 'code_status.csv' (with columns 'subject_id', 'hadm_id', 'icustay_id', timednr_chart, 'timecmo_chart', 'timecmo_nursingnote')
     in the local directory.
     
     Args: 
@@ -1087,10 +1087,11 @@ def load_processed_data(data_hours=24, gap_time=12):
         deathtimes_valid['mort_hosp_valid'] = True
         cmo = pd.read_csv('data/code_status.csv')
         cmo = cmo[cmo.cmo > 0]
+        cmo['timednr_chart'] = pd.to_datetime(cmo.timednr_chart)
         cmo['timecmo_chart'] = pd.to_datetime(cmo.timecmo_chart)
         cmo['timecmo_nursingnote'] = pd.to_datetime(cmo.timecmo_nursingnote)
         cmo['cmo_min_time'] = cmo.loc[:, [
-            'timecmo_chart', 'timecmo_nursingnote']].min(axis=1)
+            'timednr_chart', 'timecmo_chart', 'timecmo_nursingnote']].min(axis=1)
         all_mort_times = pd.merge(deathtimes_valid, cmo, on=['subject_id', 'hadm_id', 'icustay_id'], how='outer')[
             ['subject_id', 'hadm_id', 'icustay_id', 'deathtime', 'dischtime', 'cmo_min_time']]
         all_mort_times['deathtime'] = pd.to_datetime(all_mort_times.deathtime)
